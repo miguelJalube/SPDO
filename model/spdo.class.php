@@ -5,18 +5,15 @@ use PDO;
 class SPDO{
   private $PDOInstance = null;  
   private static $instance = null;
-  const DEFAULT_SQL_USER = '';
-  const DEFAULT_SQL_HOST = '';
-  const DEFAULT_SQL_PASS = '';
-  const DEFAULT_SQL_DTB = '';
 
-  public function __construct(){
-          $this->PDOInstance = new PDO('mysql:dbname='.self::DEFAULT_SQL_DTB.';host='.self::DEFAULT_SQL_HOST, self::DEFAULT_SQL_USER , self::DEFAULT_SQL_PASS);
+  public function __construct($host, $user, $password, $dbName){
+          $this->PDOInstance = new PDO('mysql:dbname='.$dbName.';host='.$host, $user , $password);
   }
   
   public static function getInstance(){  
     if(is_null(self::$instance)){
-        self::$instance = new SPDO();
+        $ini_array = parse_ini_file('config.ini');
+        self::$instance = new SPDO($ini_array['dbHost'], $ini_array['dbUser'], $ini_array['dbPassword'], $ini_array['dbName']);
     }
     return self::$instance;
   }
