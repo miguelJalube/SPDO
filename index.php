@@ -7,8 +7,16 @@ function __autoload($class_name){
     }
 }
 
+$req = 'INSERT INTO map (height, width, obstacles, ships) VALUES (:height, :width, :obstacles, :ships)';
+$bind = array(
+    'height'=>'23',
+    'width'=>'23',
+    'obstacles'=>'23',
+    'ships'=>'23'
+);
+
 $query = \model\SPDO::getInstance();
-$array = $query->query('SELECT * FROM equiw_content');
+$array = $query->query($req, $bind);
 
 echo "<pre>";
 print_r($array);

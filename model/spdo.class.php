@@ -10,7 +10,7 @@ class SPDO{
           $this->PDOInstance = new PDO('mysql:dbname='.$dbName.';host='.$host, $user , $password);
   }
   
-  public static function getInstance(){  
+  public static function getInstance(){
     if(is_null(self::$instance)){
         $ini_array = parse_ini_file('config.ini');
         self::$instance = new SPDO($ini_array['dbHost'], $ini_array['dbUser'], $ini_array['dbPassword'], $ini_array['dbName']);
@@ -21,7 +21,11 @@ class SPDO{
   public function query($query, $bind = null, $fetch = null, $fetchStyle = null, $fetchParam = null){
       try {
           $sth = $this->PDOInstance->prepare($query);
-          $this->bind($bind);
+          if($bind != null && is_array($bind)){
+              foreach($bind as $key => $value){
+                  $sth->bindValue(':'.$key, $value);
+              }
+          }
           $result = $sth->execute();
           if(preg_match('/^SELECT/',$query)){
               if($fetch == 1){
@@ -37,7 +41,7 @@ class SPDO{
       }
   }
   
-  private function bind($bind){
+  private function bind($bind, $sth){
       if($bind != null && is_array($bind)){
           foreach($bind as $key => $value){
               $sth->bindValue(':'.$key, $value);
