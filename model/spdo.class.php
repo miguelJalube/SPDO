@@ -3,16 +3,19 @@ namespace model;
 use PDO;
 
 class SPDO{
+  
+  const CONFIG = "config.ini";
+  
   private $PDOInstance = null;  
   private static $instance = null;
 
-  public function __construct($host, $user, $password, $dbName){
+  private function __construct($host, $user, $password, $dbName){
           $this->PDOInstance = new PDO('mysql:dbname='.$dbName.';host='.$host, $user , $password);
   }
   
   public static function getInstance(){
     if(is_null(self::$instance)){
-        $ini_array = parse_ini_file('config.ini');
+        $ini_array = parse_ini_file(self::CONFIG);
         self::$instance = new SPDO($ini_array['dbHost'], $ini_array['dbUser'], $ini_array['dbPassword'], $ini_array['dbName']);
     }
     return self::$instance;
